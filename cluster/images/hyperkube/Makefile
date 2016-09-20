@@ -33,7 +33,7 @@ ifeq ($(UNAME_S),Linux)
 endif
 
 ifeq ($(ARCH),amd64)
-	BASEIMAGE?=debian:jessie
+	BASEIMAGE?=centos:centos7
 endif
 ifeq ($(ARCH),arm)
 	BASEIMAGE?=armhf/debian:jessie
@@ -74,9 +74,11 @@ endif
 	# Multinode addons; all singlenode addons plus kube-proxy (and soon flannel)
 	cp ${TEMP_DIR}/addons/singlenode/*.yaml ${TEMP_DIR}/addons/multinode/
 	cp kube-proxy-ds.yaml ${TEMP_DIR}/addons/multinode/kube-proxy.yaml
-
+ifneq ("$(wildcard ../../../_output/dockerized/bin/linux/$(ARCH)/hyperkube)","")
 	cp ../../../_output/dockerized/bin/linux/${ARCH}/hyperkube ${TEMP_DIR}
-
+else
+	curl -sSL --retry 5 https://storage.googleapis.com/kubernetes-release/release/${VERSION}/bin/linux/${ARCH}/hyperkube > ${TEMP_DIR}/hyperkube
+endif
 	cd ${TEMP_DIR} && sed -i.back "s|VERSION|${VERSION}|g" addons/singlenode/*.yaml addons/multinode/*.yaml static-pods/*.json
 	cd ${TEMP_DIR} && sed -i.back "s|REGISTRY|${REGISTRY}|g" addons/singlenode/*.yaml addons/multinode/*.yaml static-pods/*.json
 	cd ${TEMP_DIR} && sed -i.back "s|ARCH|${ARCH}|g" addons/singlenode/*.yaml addons/multinode/*.yaml static-pods/*.json

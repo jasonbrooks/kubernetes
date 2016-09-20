@@ -18,8 +18,8 @@ FROM BASEIMAGE
 # If we're building normally, for amd64, CROSS_BUILD lines are removed
 CROSS_BUILD_COPY qemu-ARCH-static /usr/bin/
 
-RUN DEBIAN_FRONTEND=noninteractive apt-get update -y \
-    && DEBIAN_FRONTEND=noninteractive apt-get -yy -q install \
+RUN yum update -y && yum clean all
+RUN yum install -y \
     iptables \
     ebtables \
     ethtool \
@@ -32,9 +32,10 @@ RUN DEBIAN_FRONTEND=noninteractive apt-get update -y \
     nfs-common \
     glusterfs-client \
     cifs-utils \
-    && DEBIAN_FRONTEND=noninteractive apt-get upgrade -y \
-    && DEBIAN_FRONTEND=noninteractive apt-get autoremove -y \
-    && DEBIAN_FRONTEND=noninteractive apt-get clean && rm -rf /var/lib/apt/lists/* /tmp/* /var/tmp/* # CACHEBUST
+    nfs-utils \
+    glusterfs-client \
+    openssl \
+    && yum clean all
 
 RUN cp /usr/bin/nsenter /nsenter
 
