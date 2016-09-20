@@ -17,7 +17,7 @@
 # Usage:
 #   [ARCH=amd64] [REGISTRY="gcr.io/google_containers"] make (build|push) VERSION={some_released_version_of_kubernetes}
 
-REGISTRY?=gcr.io/google_containers
+REGISTRY?=
 ARCH?=amd64
 TEMP_DIR:=$(shell mktemp -d -t hyperkubeXXXXXX)
 CNI_RELEASE=0799f5732f2a11b329d9e3d51b9c8f2e3759f2ff
